@@ -9,6 +9,7 @@ SPRITE player;
 SPRITE enemy1;
 SPRITE enemy2;
 SPRITE food;
+SPRITE princess;
 SPRITE scoreDisplay;
 SPRITE lifeDisplay;
 SPRITE scoreNum;
@@ -27,6 +28,7 @@ void initGame() {
     initPlayer();
     initEnemies();
     initFood();
+    initPrincess();
     score = 0;
     lives = 3;
     initScoreDisplay();
@@ -39,6 +41,7 @@ void updateGame() {
     updatePlayer();
     updateEnemies();
     updateFood();
+    updatePrincess();
     updateScoreNum();
     updateLifeNum();
     checkPlayerEnemyCollision();
@@ -48,6 +51,7 @@ void drawGame() {
     drawPlayer();
     drawEnemies();
     drawFood();
+    drawPrincess();
     drawScore();
     drawLives();
     drawScoreNum();
@@ -99,9 +103,17 @@ void initEnemies() {
 void initFood() {
     food.width = 8;
     food.height = 8;
-    food.x = rand() % 220;
+    food.x = rand() % 210;
     food.y = rand() % 140;
     food.oamIndex = 3;
+}
+
+void initPrincess() {
+    princess.width = 32;
+    princess.height = 32;
+    princess.x = 400;
+    princess.y = 80;
+    princess.oamIndex = 8;
 }
 
 void initScoreDisplay() {
@@ -147,15 +159,21 @@ void drawEnemies() {
     shadowOAM[enemy1.oamIndex].attr1 = ATTR1_X((enemy1.x >> 3) - hOff) | ATTR1_SMALL; 
     shadowOAM[enemy1.oamIndex].attr2 = ATTR2_TILEID(enemy1.currentFrame * 2, 8 + enemy1.direction * 2) | ATTR2_PRIORITY(0);
 
-    shadowOAM[enemy2.oamIndex].attr0 = ATTR0_Y(enemy2.y) | ATTR0_SQUARE | ATTR0_4BPP | ATTR0_REGULAR;
-    shadowOAM[enemy2.oamIndex].attr1 = ATTR1_X(enemy2.x) | ATTR1_SMALL; 
-    shadowOAM[enemy2.oamIndex].attr2 = ATTR2_TILEID(enemy2.currentFrame * 2, 16 + enemy2.direction * 2) | ATTR2_PRIORITY(0);
+    // shadowOAM[enemy2.oamIndex].attr0 = ATTR0_Y(enemy2.y) | ATTR0_SQUARE | ATTR0_4BPP | ATTR0_REGULAR;
+    // shadowOAM[enemy2.oamIndex].attr1 = ATTR1_X(enemy2.x) | ATTR1_SMALL; 
+    // shadowOAM[enemy2.oamIndex].attr2 = ATTR2_TILEID(enemy2.currentFrame * 2, 16 + enemy2.direction * 2) | ATTR2_PRIORITY(0);
 }
 
 void drawFood() {
     shadowOAM[food.oamIndex].attr0 = ATTR0_Y(food.y - vOff) | ATTR0_SQUARE | ATTR0_4BPP | ATTR0_REGULAR;
     shadowOAM[food.oamIndex].attr1 = ATTR1_X(food.x - hOff) | ATTR1_TINY;
     shadowOAM[food.oamIndex].attr2 = ATTR2_TILEID(8, 0) | ATTR2_PRIORITY(0);
+}
+
+void drawPrincess() {
+    shadowOAM[princess.oamIndex].attr0 = ATTR0_Y(princess.y - vOff) | ATTR0_SQUARE | ATTR0_4BPP | ATTR0_REGULAR;
+    shadowOAM[princess.oamIndex].attr1 = ATTR1_X(princess.x - hOff) | ATTR1_MEDIUM;
+    shadowOAM[princess.oamIndex].attr2 = ATTR2_TILEID(8, 6) | ATTR2_PRIORITY(0) | ATTR2_PALROW(3);
 }
 
 void drawScore() {
@@ -291,7 +309,7 @@ void updateEnemies() {
         //}
     }
 
-    // Update animations if needed
+    // animations
     if (enemy1.isAnimating) {
         enemy1.timeUntilNextFrame--;
         if (enemy1.timeUntilNextFrame == 0) {
@@ -311,6 +329,14 @@ void updateFood() {
         }
         food.x = 240;
         food.y = 180;
+    }
+}
+
+void updatePrincess() {
+    if (collision(player.x, player.y, player.width, player.height, princess.x, princess.y, princess.width, princess.height)) {
+        if (BUTTON_PRESSED(BUTTON_A)) {
+            goToWin();
+        }
     }
 }
 
@@ -349,16 +375,16 @@ void updateScoreNum() {
 
 void checkPlayerEnemyCollision() {
     if (collision(player.x, player.y, player.width, player.height, enemy1.x >> 3, enemy1.y >> 3, enemy1.width, enemy1.height)) {
-        if (player.x < enemy1.x) {
-            player.x += 10;
-            lives--;
-        }
         if (player.x > enemy1.x) {
             player.x -= 10;
             lives--;
         }
+        if (player.x < enemy1.x) {
+            player.x += 10;
+            lives--;
+        }
     }
-    if (collision(player.x, player.y, player.width, player.height, enemy2.x, enemy2.y, enemy2.width, enemy2.height)) {
-        lives--;
-    }
+    // if (collision(player.x, player.y, player.width, player.height, enemy2.x, enemy2.y, enemy2.width, enemy2.height)) {
+    //     lives--;
+    // }
 }

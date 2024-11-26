@@ -2,6 +2,7 @@
 # 1 "<built-in>"
 # 1 "<command-line>"
 # 1 "main.c"
+
 # 1 "gba.h" 1
 
 
@@ -42,7 +43,7 @@ typedef volatile struct {
 } DMAChannel;
 # 97 "gba.h"
 void DMANow(int channel, volatile void* src, volatile void* dest, unsigned int ctrl);
-# 2 "main.c" 2
+# 3 "main.c" 2
 # 1 "mode0.h" 1
 # 32 "mode0.h"
 typedef struct {
@@ -54,7 +55,7 @@ typedef struct {
 typedef struct {
  u16 tilemap[1024];
 } SB;
-# 3 "main.c" 2
+# 4 "main.c" 2
 # 1 "sprites.h" 1
 # 10 "sprites.h"
 typedef struct {
@@ -90,7 +91,7 @@ typedef struct {
     int hide;
     u8 oamIndex;
 } SPRITE;
-# 4 "main.c" 2
+# 5 "main.c" 2
 # 1 "print.h" 1
 # 25 "print.h"
 # 1 "/opt/devkitpro/devkitARM/lib/gcc/arm-none-eabi/9.1.0/include/stdint.h" 1 3 4
@@ -297,7 +298,36 @@ void mgba_printf_level(int level, const char* ptr, ...);
 void mgba_printf(const char* string, ...);
 void mgba_break(void);
 void mgba_close(void);
-# 5 "main.c" 2
+# 6 "main.c" 2
+# 1 "digitalSound.h" 1
+
+
+
+void setupSounds();
+void setupSoundInterrupts();
+void interruptHandler();
+
+void playSoundA(const signed char* sound, int length, int loops);
+void playSoundB(const signed char* sound, int length, int loops);
+
+void pauseSounds();
+void unpauseSounds();
+void stopSounds();
+# 52 "digitalSound.h"
+typedef struct{
+    const signed char* data;
+    int dataLength;
+    int isPlaying;
+    int looping;
+    int durationInVBlanks;
+    int vBlankCount;
+} SOUND;
+
+SOUND soundA;
+SOUND soundB;
+# 7 "main.c" 2
+
+
 # 1 "tilemapstart.h" 1
 
 
@@ -307,7 +337,7 @@ void mgba_close(void);
 
 
 extern const unsigned short tilemapstartMap[1024];
-# 6 "main.c" 2
+# 10 "main.c" 2
 # 1 "tilemappaused.h" 1
 
 
@@ -317,7 +347,7 @@ extern const unsigned short tilemapstartMap[1024];
 
 
 extern const unsigned short tilemappausedMap[1024];
-# 7 "main.c" 2
+# 11 "main.c" 2
 # 1 "tilemaplvlone.h" 1
 
 
@@ -327,7 +357,7 @@ extern const unsigned short tilemappausedMap[1024];
 
 
 extern const unsigned short tilemaplvloneMap[2048];
-# 8 "main.c" 2
+# 12 "main.c" 2
 # 1 "tilemapwin.h" 1
 
 
@@ -337,7 +367,7 @@ extern const unsigned short tilemaplvloneMap[2048];
 
 
 extern const unsigned short tilemapwinMap[1024];
-# 9 "main.c" 2
+# 13 "main.c" 2
 # 1 "tilemaplose.h" 1
 
 
@@ -347,7 +377,7 @@ extern const unsigned short tilemapwinMap[1024];
 
 
 extern const unsigned short tilemaploseMap[1024];
-# 10 "main.c" 2
+# 14 "main.c" 2
 # 1 "tilemapinstructions.h" 1
 
 
@@ -357,7 +387,7 @@ extern const unsigned short tilemaploseMap[1024];
 
 
 extern const unsigned short tilemapinstructionsMap[1024];
-# 11 "main.c" 2
+# 15 "main.c" 2
 # 1 "tilemapparallaxbackground.h" 1
 
 
@@ -367,21 +397,21 @@ extern const unsigned short tilemapinstructionsMap[1024];
 
 
 extern const unsigned short tilemapparallaxbackgroundMap[1024];
-# 12 "main.c" 2
+# 16 "main.c" 2
 # 1 "tileset.h" 1
 # 21 "tileset.h"
 extern const unsigned short tilesetTiles[2912];
 
 
 extern const unsigned short tilesetPal[256];
-# 13 "main.c" 2
+# 17 "main.c" 2
 # 1 "spritesheet.h" 1
 # 21 "spritesheet.h"
 extern const unsigned short spritesheetTiles[16384];
 
 
 extern const unsigned short spritesheetPal[256];
-# 14 "main.c" 2
+# 18 "main.c" 2
 # 1 "game.h" 1
 
 
@@ -404,7 +434,7 @@ extern int lives;
 
 extern int hOff;
 extern int vOff;
-# 15 "main.c" 2
+# 19 "main.c" 2
 # 1 "goldenaxestart.h" 1
 # 22 "goldenaxestart.h"
 extern const unsigned short goldenaxestartTiles[6576];
@@ -414,7 +444,7 @@ extern const unsigned short goldenaxestartMap[1024];
 
 
 extern const unsigned short goldenaxestartPal[256];
-# 16 "main.c" 2
+# 20 "main.c" 2
 # 1 "instructionsgoldenaxe.h" 1
 # 22 "instructionsgoldenaxe.h"
 extern const unsigned short instructionsgoldenaxeTiles[1328];
@@ -424,7 +454,7 @@ extern const unsigned short instructionsgoldenaxeMap[1024];
 
 
 extern const unsigned short instructionsgoldenaxePal[256];
-# 17 "main.c" 2
+# 21 "main.c" 2
 # 1 "wingoldenaxe.h" 1
 # 22 "wingoldenaxe.h"
 extern const unsigned short wingoldenaxeTiles[1456];
@@ -434,7 +464,7 @@ extern const unsigned short wingoldenaxeMap[1024];
 
 
 extern const unsigned short wingoldenaxePal[256];
-# 18 "main.c" 2
+# 22 "main.c" 2
 # 1 "losegoldenaxe.h" 1
 # 22 "losegoldenaxe.h"
 extern const unsigned short losegoldenaxeTiles[1488];
@@ -444,7 +474,23 @@ extern const unsigned short losegoldenaxeMap[1024];
 
 
 extern const unsigned short losegoldenaxePal[256];
-# 19 "main.c" 2
+# 23 "main.c" 2
+
+
+# 1 "goldenaxestartmusic.h" 1
+
+
+extern const unsigned int goldenaxestartmusic_sampleRate;
+extern const unsigned int goldenaxestartmusic_length;
+extern const signed char goldenaxestartmusic_data[];
+# 26 "main.c" 2
+# 1 "gameoversoundeffect.h" 1
+
+
+extern const unsigned int gameoversoundeffect_sampleRate;
+extern const unsigned int gameoversoundeffect_length;
+extern const signed char gameoversoundeffect_data[];
+# 27 "main.c" 2
 
 
 void initialize();
@@ -514,8 +560,11 @@ int main() {
 void initialize() {
     mgba_open();
     (*(volatile unsigned short *)0x4000000) = ((0) & 7) | (1 << (8 + (0 % 4))) | (1 << 12);
-    (*(volatile unsigned short*) 0x400000A) = ((0) << 2) | ((10) << 8) | (0 << 14) | (0 << 7) | 0;
-    (*(volatile unsigned short*) 0x4000008) = ((0) << 2) | ((8) << 8) | (1 << 14) | (0 << 7) | 1 ;
+    (*(volatile unsigned short*) 0x4000008) = ((0) << 2) | ((8) << 8) | (1 << 14) | (0 << 7);
+
+
+    setupSounds();
+    setupSoundInterrupts();
 
     goToStart();
 
@@ -580,17 +629,20 @@ void pause() {
     }
 }
 void goToGameOne() {
+    (*(volatile unsigned short *)0x4000000) = ((0) & 7) | (1 << (8 + (0 % 4))) | (1 << (8 + (1 % 4))) | (1 << 12);
+    playSoundA(goldenaxestartmusic_data, goldenaxestartmusic_length, 1);
+
+    (*(volatile unsigned short*) 0x4000008) = ((0) << 2) | ((8) << 8) | (1 << 14) | (0 << 7) | 1;
+    DMANow(3, &tilesetPal, ((unsigned short *)0x5000000), 512 / 2);
+    DMANow(3, &tilesetTiles, &((CB*) 0x6000000)[0], 5824 / 2);
+    DMANow(3, &tilemaplvloneMap, &((SB*) 0x6000000)[8], (4096) / 2);
 
 
-    (*(volatile unsigned short *)0x4000000) = (1 << (8 + (1 % 4))) | (1 << (8 + (0 % 4))) | (1 << 12);
-    DMANow(3, tilesetTiles, &((CB*) 0x6000000)[0], 5824 / 2);
+
+    (*(volatile unsigned short*) 0x400000A) = ((0) << 2) | ((10) << 8) | (0 << 7) | 0;
+
     DMANow(3, tilemapparallaxbackgroundMap, &((SB*) 0x6000000)[10], (2048) / 2);
-    DMANow(3, tilesetPal, ((unsigned short *)0x5000000), 512 / 2);
 
-
-    DMANow(3, tilesetTiles, &((CB*) 0x6000000)[0], 5824 / 2);
-    DMANow(3, tilemaplvloneMap, &((SB*) 0x6000000)[8], (4096) / 2);
-    DMANow(3, tilesetPal, ((unsigned short *)0x5000000), 512 / 2);
 
 
     DMANow(3, spritesheetTiles, &((CB*) 0x6000000)[4], 32768 / 4);
@@ -610,12 +662,15 @@ void gameOne() {
     DMANow(3, shadowOAM, ((OBJ_ATTR*)(0x7000000)), 128 * 4);
 
     if ((!(~(oldButtons) & ((1<<3))) && (~(buttons) & ((1<<3))))) {
+        stopSounds();
         goToPause();
     }
     if (lives <= 0) {
+        stopSounds();
         goToLose();
     }
     if (score >= 5) {
+        stopSounds();
         goToWin();
     }
 }
@@ -648,9 +703,9 @@ void win() {
 }
 void goToLose() {
     (*(volatile unsigned short *)0x4000000) = (1 << (8 + (0 % 4)));
+    playSoundB(gameoversoundeffect_data, gameoversoundeffect_length, 0);
     hOff = 0;
     vOff = 0;
-
 
 
 

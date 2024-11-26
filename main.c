@@ -1,7 +1,11 @@
+// Files
 #include "gba.h"
 #include "mode0.h"
 #include "sprites.h"
 #include "print.h"
+#include "digitalSound.h"
+
+// Tiles and stuff
 #include "tilemapstart.h"
 #include "tilemappaused.h"
 #include "tilemaplvlone.h"
@@ -16,6 +20,10 @@
 #include "instructionsgoldenaxe.h"
 #include "wingoldenaxe.h"
 #include "losegoldenaxe.h"
+
+// Sound
+#include "goldenaxestartmusic.h"
+#include "gameoversoundeffect.h"
 
 
 void initialize();
@@ -85,8 +93,11 @@ int main() {
 void initialize() {
     mgba_open();
     REG_DISPCTL = MODE(0) | BG_ENABLE(0) | SPRITE_ENABLE;
-    REG_BG1CNT = BG_CHARBLOCK(0) | BG_SCREENBLOCK(10) | BG_SIZE_SMALL | BG_4BPP | 0;
-    REG_BG0CNT = BG_CHARBLOCK(0) | BG_SCREENBLOCK(8) | BG_SIZE_WIDE | BG_4BPP | 1 ;
+    REG_BG0CNT = BG_CHARBLOCK(0) | BG_SCREENBLOCK(8) | BG_SIZE_WIDE | BG_4BPP;
+    //REG_BG1CNT = BG_CHARBLOCK(0) | BG_SCREENBLOCK(10) | 0;
+
+    setupSounds();
+    setupSoundInterrupts();
 
     goToStart();
     
@@ -151,20 +162,23 @@ void pause() {
     }
 }
 void goToGameOne() {
+    REG_DISPCTL = MODE(0) | BG_ENABLE(0) | BG_ENABLE(1) | SPRITE_ENABLE;
+    playSoundA(goldenaxestartmusic_data, goldenaxestartmusic_length, 1);
+    //background
+    REG_BG0CNT = BG_CHARBLOCK(0) | BG_SCREENBLOCK(8) | BG_SIZE_WIDE | BG_4BPP | 1;
+    DMANow(3, &tilesetPal, BG_PALETTE, tilesetPalLen / 2);
+    DMANow(3, &tilesetTiles, &CHARBLOCK[0], tilesetTilesLen / 2);
+    DMANow(3, &tilemaplvloneMap, &SCREENBLOCK[8], tilemaplvloneLen / 2);
+    //DMANow(3, tilesetPal, BG_PALETTE, tilesetPalLen / 2);
 
     //parallax background
-    REG_DISPCTL = BG_ENABLE(1) | BG_ENABLE(0) | SPRITE_ENABLE;
-    DMANow(3, tilesetTiles, &CHARBLOCK[0], tilesetTilesLen / 2);
+    REG_BG1CNT = BG_CHARBLOCK(0) | BG_SCREENBLOCK(10) | BG_4BPP | 0;
+    //DMANow(3, tilesetTiles, &CHARBLOCK[1], tilesetTilesLen / 2);
     DMANow(3, tilemapparallaxbackgroundMap, &SCREENBLOCK[10], tilemapparallaxbackgroundLen / 2);
-    DMANow(3, tilesetPal, BG_PALETTE, tilesetPalLen / 2);
-
-    //background
-    DMANow(3, tilesetTiles, &CHARBLOCK[0], tilesetTilesLen / 2);
-    DMANow(3, tilemaplvloneMap, &SCREENBLOCK[8], tilemaplvloneLen / 2);
-    DMANow(3, tilesetPal, BG_PALETTE, tilesetPalLen / 2);
+    //DMANow(3, tilesetPal, BG_PALETTE, tilesetPalLen / 2);
 
     //sprites
-    DMANow(3, spritesheetTiles, &CHARBLOCK[4], spritesheetTilesLen / 4);
+    DMANow(3, spritesheetTiles, &CHARBLOCK[4],  spritesheetTilesLen / 4);
     DMANow(3, spritesheetPal, SPRITE_PAL, spritesheetPalLen / 2);
     hideSprites();
     DMANow(3, shadowOAM, OAM, 128 * 4);
@@ -181,12 +195,15 @@ void gameOne() {
     DMANow(3, shadowOAM, OAM, 128 * 4);
 
     if (BUTTON_PRESSED(BUTTON_START)) {
+        stopSounds();
         goToPause();
     }
     if (lives <= 0) {
+        stopSounds();
         goToLose();
     }
     if (score >= 5) {
+        stopSounds();
         goToWin();
     }
 }
@@ -219,12 +236,12 @@ void win() {
 }
 void goToLose() {
     REG_DISPCTL = BG_ENABLE(0);
+    playSoundB(gameoversoundeffect_data, gameoversoundeffect_length, 0);
     hOff = 0;
     vOff = 0;
     // DMANow(3, tilesetTiles, &CHARBLOCK[0], tilesetTilesLen / 2);
     // DMANow(3, tilemaploseMap, &SCREENBLOCK[8], tilemaploseLen / 2);
     // DMANow(3, tilesetPal, BG_PALETTE, tilesetPalLen / 2);
-
     DMANow(3, losegoldenaxePal, BG_PALETTE, losegoldenaxePalLen / 2);
     DMANow(3, losegoldenaxeTiles, &CHARBLOCK[0], losegoldenaxeTilesLen / 2);
     DMANow(3, losegoldenaxeMap, &SCREENBLOCK[8], losegoldenaxeMapLen / 2);

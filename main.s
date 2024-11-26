@@ -78,19 +78,24 @@ initialize:
 	mov	lr, pc
 	bx	r3
 	mov	r3, #67108864
-	mov	r0, #4352
-	mov	r1, #2560
+	mov	r1, #18432
+	mov	r2, #4352
+	strh	r2, [r3]	@ movhi
+	strh	r1, [r3, #8]	@ movhi
 	ldr	r2, .L8+4
-	strh	r0, [r3]	@ movhi
+	mov	lr, pc
+	bx	r2
+	ldr	r3, .L8+8
+	mov	lr, pc
+	bx	r3
 	pop	{r4, lr}
-	strh	r1, [r3, #10]	@ movhi
-	strh	r2, [r3, #8]	@ movhi
 	b	goToStart
 .L9:
 	.align	2
 .L8:
 	.word	mgba_open
-	.word	18433
+	.word	setupSounds
+	.word	setupSoundInterrupts
 	.size	initialize, .-initialize
 	.align	2
 	.syntax unified
@@ -245,88 +250,89 @@ goToGameOne:
 	@ Function supports interworking.
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 0, uses_anonymous_args = 0
-	mov	r3, #67108864
-	mov	r2, #4864
 	push	{r4, r5, r6, lr}
-	ldr	r6, .L24
-	ldr	r4, .L24+4
-	mov	r1, r6
-	strh	r2, [r3]	@ movhi
-	ldr	r5, .L24+8
-	mov	r3, #2912
-	mov	r2, #100663296
-	mov	r0, #3
+	mov	r2, #4864
+	mov	r5, #67108864
+	ldr	r3, .L24
+	strh	r2, [r5]	@ movhi
+	ldr	r1, [r3]
+	mov	r2, #1
+	ldr	r0, .L24+4
+	ldr	r3, .L24+8
 	mov	lr, pc
-	bx	r4
-	mov	r3, #1024
-	mov	r0, #3
+	bx	r3
 	ldr	r2, .L24+12
-	ldr	r1, .L24+16
-	mov	lr, pc
-	bx	r4
-	mov	r1, r5
+	ldr	r4, .L24+16
+	strh	r2, [r5, #8]	@ movhi
 	mov	r3, #256
 	mov	r2, #83886080
 	mov	r0, #3
+	ldr	r1, .L24+20
 	mov	lr, pc
 	bx	r4
-	mov	r1, r6
 	mov	r3, #2912
 	mov	r2, #100663296
 	mov	r0, #3
-	mov	lr, pc
-	bx	r4
-	mov	r3, #2048
-	mov	r0, #3
-	ldr	r2, .L24+20
 	ldr	r1, .L24+24
 	mov	lr, pc
 	bx	r4
-	mov	r1, r5
-	mov	r3, #256
-	mov	r2, #83886080
-	mov	r0, #3
-	mov	lr, pc
-	bx	r4
-	mov	r3, #8192
+	mov	r3, #2048
 	mov	r0, #3
 	ldr	r2, .L24+28
 	ldr	r1, .L24+32
 	mov	lr, pc
 	bx	r4
+	mov	r2, #2560
+	mov	r3, #1024
+	strh	r2, [r5, #10]	@ movhi
 	mov	r0, #3
 	ldr	r2, .L24+36
 	ldr	r1, .L24+40
+	mov	lr, pc
+	bx	r4
+	mov	r3, #8192
+	mov	r0, #3
+	ldr	r2, .L24+44
+	ldr	r1, .L24+48
+	mov	lr, pc
+	bx	r4
+	mov	r0, #3
+	ldr	r2, .L24+52
+	ldr	r1, .L24+56
 	mov	r3, #256
 	mov	lr, pc
 	bx	r4
-	ldr	r3, .L24+44
+	ldr	r3, .L24+60
 	mov	lr, pc
 	bx	r3
 	mov	r2, #117440512
 	mov	r3, #512
 	mov	r0, #3
-	ldr	r1, .L24+48
+	ldr	r1, .L24+64
 	mov	lr, pc
 	bx	r4
-	ldr	r3, .L24+52
+	ldr	r3, .L24+68
 	mov	lr, pc
 	bx	r3
 	mov	r2, #2
-	ldr	r3, .L24+56
+	ldr	r3, .L24+72
 	pop	{r4, r5, r6, lr}
 	str	r2, [r3]
 	bx	lr
 .L25:
 	.align	2
 .L24:
-	.word	tilesetTiles
+	.word	goldenaxestartmusic_length
+	.word	goldenaxestartmusic_data
+	.word	playSoundA
+	.word	18433
 	.word	DMANow
 	.word	tilesetPal
-	.word	100683776
-	.word	tilemapparallaxbackgroundMap
+	.word	tilesetTiles
 	.word	100679680
 	.word	tilemaplvloneMap
+	.word	100683776
+	.word	tilemapparallaxbackgroundMap
 	.word	100728832
 	.word	spritesheetTiles
 	.word	83886592
@@ -570,46 +576,54 @@ goToLose:
 	@ Function supports interworking.
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 0, uses_anonymous_args = 0
-	mov	ip, #0
-	mov	r3, #256
-	mov	r2, #67108864
-	ldr	r0, .L69
 	push	{r4, lr}
-	ldr	lr, .L69+4
-	strh	r3, [r2]	@ movhi
-	ldr	r4, .L69+8
+	mov	r2, #67108864
+	mov	r4, #256
+	ldr	r3, .L69
+	strh	r4, [r2]	@ movhi
+	ldr	r1, [r3]
+	mov	r2, #0
+	ldr	r0, .L69+4
+	ldr	r3, .L69+8
+	mov	lr, pc
+	bx	r3
+	mov	ip, #0
+	ldr	r0, .L69+12
+	ldr	lr, .L69+16
 	str	ip, [r0]
+	mov	r3, r4
 	mov	r2, #83886080
+	ldr	r4, .L69+20
 	mov	r0, #3
-	ldr	r1, .L69+12
+	ldr	r1, .L69+24
 	str	ip, [lr]
 	mov	lr, pc
 	bx	r4
 	mov	r3, #1488
 	mov	r2, #100663296
 	mov	r0, #3
-	ldr	r1, .L69+16
+	ldr	r1, .L69+28
 	mov	lr, pc
 	bx	r4
 	mov	r0, #3
 	mov	r3, #1024
-	ldr	r2, .L69+20
-	ldr	r1, .L69+24
+	ldr	r2, .L69+32
+	ldr	r1, .L69+36
 	mov	lr, pc
 	bx	r4
 	mov	r1, #5
-	ldr	r2, .L69+28
-	ldr	r3, .L69+32
+	ldr	r2, .L69+40
+	ldr	r3, .L69+44
 	str	r1, [r2]
 	mov	lr, pc
 	bx	r3
-	ldr	r3, .L69+36
+	ldr	r3, .L69+48
 	mov	lr, pc
 	bx	r3
 	mov	r3, #512
 	mov	r2, #117440512
 	mov	r0, #3
-	ldr	r1, .L69+40
+	ldr	r1, .L69+52
 	mov	lr, pc
 	bx	r4
 	pop	{r4, lr}
@@ -617,6 +631,9 @@ goToLose:
 .L70:
 	.align	2
 .L69:
+	.word	gameoversoundeffect_length
+	.word	gameoversoundeffect_data
+	.word	playSoundB
 	.word	hOff
 	.word	vOff
 	.word	DMANow
@@ -677,12 +694,21 @@ gameOne:
 	pop	{r4, lr}
 	bx	lr
 .L81:
+	ldr	r3, .L82+36
+	mov	lr, pc
+	bx	r3
 	pop	{r4, lr}
 	b	goToWin
 .L80:
+	ldr	r3, .L82+36
+	mov	lr, pc
+	bx	r3
 	bl	goToLose
 	b	.L73
 .L79:
+	ldr	r3, .L82+36
+	mov	lr, pc
+	bx	r3
 	bl	goToPause
 	b	.L72
 .L83:
@@ -697,6 +723,7 @@ gameOne:
 	.word	buttons
 	.word	lives
 	.word	score
+	.word	stopSounds
 	.size	gameOne, .-gameOne
 	.section	.text.startup,"ax",%progbits
 	.align	2
@@ -715,25 +742,16 @@ main:
 	mov	lr, pc
 	bx	r3
 	mov	r4, #67108864
-	mov	r3, #4352
-	mov	r1, #2560
-	ldr	r2, .L104+4
-	strh	r3, [r4]	@ movhi
-	strh	r1, [r4, #10]	@ movhi
-	ldr	r3, .L104+8
-	strh	r2, [r4, #8]	@ movhi
-	mov	lr, pc
-	bx	r3
-	ldr	r5, .L104+12
-	ldr	fp, .L104+16
-	ldr	r10, .L104+20
-	ldr	r9, .L104+24
-	ldr	r8, .L104+28
-	ldr	r7, .L104+32
-	ldr	r6, .L104+36
+	ldr	r5, .L104+4
+	ldr	fp, .L104+8
+	ldr	r10, .L104+12
+	ldr	r9, .L104+16
+	ldr	r8, .L104+20
+	ldr	r7, .L104+24
+	ldr	r6, .L104+28
 .L93:
 	ldrh	r2, [r5]
-	ldr	r3, .L104+40
+	ldr	r3, .L104+32
 	strh	r2, [fp]	@ movhi
 	ldrh	r1, [r3, #48]
 	ldr	r3, [r10]
@@ -751,7 +769,7 @@ main:
 	.word	.L86
 .L86:
 	tst	r2, #8
-	ldrne	r3, .L104+44
+	ldrne	r3, .L104+36
 	movne	lr, pc
 	bxne	r3
 .L85:
@@ -783,38 +801,36 @@ main:
 .L88:
 	tst	r2, #8
 	beq	.L85
-	ldr	r3, .L104+48
+	ldr	r3, .L104+40
 	mov	lr, pc
 	bx	r3
 	b	.L85
 .L89:
 	tst	r2, #8
 	beq	.L85
-	ldr	r3, .L104+52
+	ldr	r3, .L104+44
 	mov	lr, pc
 	bx	r3
 	b	.L85
 .L90:
-	ldr	r3, .L104+56
+	ldr	r3, .L104+48
 	mov	lr, pc
 	bx	r3
 	b	.L85
 .L92:
-	ldr	r3, .L104+60
+	ldr	r3, .L104+52
 	mov	lr, pc
 	bx	r3
 	b	.L85
 .L91:
-	ldr	r3, .L104+64
+	ldr	r3, .L104+56
 	mov	lr, pc
 	bx	r3
 	b	.L85
 .L105:
 	.align	2
 .L104:
-	.word	mgba_open
-	.word	18433
-	.word	goToStart
+	.word	initialize
 	.word	buttons
 	.word	oldButtons
 	.word	state
@@ -850,4 +866,6 @@ lose:
 	.comm	hOff,4,4
 	.comm	whichGame,4,4
 	.comm	state,4,4
+	.comm	soundB,24,4
+	.comm	soundA,24,4
 	.ident	"GCC: (devkitARM release 53) 9.1.0"
