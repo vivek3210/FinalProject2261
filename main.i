@@ -425,6 +425,26 @@ extern const unsigned short instructionsgoldenaxeMap[1024];
 
 extern const unsigned short instructionsgoldenaxePal[256];
 # 17 "main.c" 2
+# 1 "wingoldenaxe.h" 1
+# 22 "wingoldenaxe.h"
+extern const unsigned short wingoldenaxeTiles[1456];
+
+
+extern const unsigned short wingoldenaxeMap[1024];
+
+
+extern const unsigned short wingoldenaxePal[256];
+# 18 "main.c" 2
+# 1 "losegoldenaxe.h" 1
+# 22 "losegoldenaxe.h"
+extern const unsigned short losegoldenaxeTiles[1488];
+
+
+extern const unsigned short losegoldenaxeMap[1024];
+
+
+extern const unsigned short losegoldenaxePal[256];
+# 19 "main.c" 2
 
 
 void initialize();
@@ -606,11 +626,16 @@ void gameTwo() {
 
 }
 void goToWin() {
+    (*(volatile unsigned short *)0x4000000) = (1 << (8 + (0 % 4)));
     hOff = 0;
     vOff = 0;
-    DMANow(3, tilesetTiles, &((CB*) 0x6000000)[0], 5824 / 2);
-    DMANow(3, tilemapwinMap, &((SB*) 0x6000000)[8], (2048) / 2);
-    DMANow(3, tilesetPal, ((unsigned short *)0x5000000), 512 / 2);
+
+
+
+
+    DMANow(3, wingoldenaxePal, ((unsigned short *)0x5000000), 512 / 2);
+    DMANow(3, wingoldenaxeTiles, &((CB*) 0x6000000)[0], 2912 / 2);
+    DMANow(3, wingoldenaxeMap, &((SB*) 0x6000000)[8], 2048 / 2);
     state = WIN;
     hideSprites();
     waitForVBlank();
@@ -622,11 +647,17 @@ void win() {
     }
 }
 void goToLose() {
+    (*(volatile unsigned short *)0x4000000) = (1 << (8 + (0 % 4)));
     hOff = 0;
     vOff = 0;
-    DMANow(3, tilesetTiles, &((CB*) 0x6000000)[0], 5824 / 2);
-    DMANow(3, tilemaploseMap, &((SB*) 0x6000000)[8], (2048) / 2);
-    DMANow(3, tilesetPal, ((unsigned short *)0x5000000), 512 / 2);
+
+
+
+
+    DMANow(3, losegoldenaxePal, ((unsigned short *)0x5000000), 512 / 2);
+    DMANow(3, losegoldenaxeTiles, &((CB*) 0x6000000)[0], 2976 / 2);
+    DMANow(3, losegoldenaxeMap, &((SB*) 0x6000000)[8], 2048 / 2);
+
     state = LOSE;
     hideSprites();
     waitForVBlank();

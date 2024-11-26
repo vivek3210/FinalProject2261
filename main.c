@@ -14,6 +14,8 @@
 #include "game.h"
 #include "goldenaxestart.h"
 #include "instructionsgoldenaxe.h"
+#include "wingoldenaxe.h"
+#include "losegoldenaxe.h"
 
 
 void initialize();
@@ -195,11 +197,16 @@ void gameTwo() {
 
 }
 void goToWin() {
+    REG_DISPCTL = BG_ENABLE(0);
     hOff = 0;
     vOff = 0;
-    DMANow(3, tilesetTiles, &CHARBLOCK[0], tilesetTilesLen / 2);
-    DMANow(3, tilemapwinMap, &SCREENBLOCK[8], tilemapwinLen / 2);
-    DMANow(3, tilesetPal, BG_PALETTE, tilesetPalLen / 2);
+    // DMANow(3, tilesetTiles, &CHARBLOCK[0], tilesetTilesLen / 2);
+    // DMANow(3, tilemapwinMap, &SCREENBLOCK[8], tilemapwinLen / 2);
+    // DMANow(3, tilesetPal, BG_PALETTE, tilesetPalLen / 2);
+
+    DMANow(3, wingoldenaxePal, BG_PALETTE, wingoldenaxePalLen / 2);
+    DMANow(3, wingoldenaxeTiles, &CHARBLOCK[0], wingoldenaxeTilesLen / 2);
+    DMANow(3, wingoldenaxeMap, &SCREENBLOCK[8], wingoldenaxeMapLen / 2);
     state = WIN;
     hideSprites();
     waitForVBlank();
@@ -211,11 +218,17 @@ void win() {
     }
 }
 void goToLose() {
+    REG_DISPCTL = BG_ENABLE(0);
     hOff = 0;
     vOff = 0;
-    DMANow(3, tilesetTiles, &CHARBLOCK[0], tilesetTilesLen / 2);
-    DMANow(3, tilemaploseMap, &SCREENBLOCK[8], tilemaploseLen / 2);
-    DMANow(3, tilesetPal, BG_PALETTE, tilesetPalLen / 2);
+    // DMANow(3, tilesetTiles, &CHARBLOCK[0], tilesetTilesLen / 2);
+    // DMANow(3, tilemaploseMap, &SCREENBLOCK[8], tilemaploseLen / 2);
+    // DMANow(3, tilesetPal, BG_PALETTE, tilesetPalLen / 2);
+
+    DMANow(3, losegoldenaxePal, BG_PALETTE, losegoldenaxePalLen / 2);
+    DMANow(3, losegoldenaxeTiles, &CHARBLOCK[0], losegoldenaxeTilesLen / 2);
+    DMANow(3, losegoldenaxeMap, &SCREENBLOCK[8], losegoldenaxeMapLen / 2);
+    
     state = LOSE;
     hideSprites();
     waitForVBlank();

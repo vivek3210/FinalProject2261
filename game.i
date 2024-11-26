@@ -334,6 +334,7 @@ typedef struct {
 SPRITE player;
 SPRITE enemy1;
 SPRITE enemy2;
+SPRITE food;
 SPRITE scoreDisplay;
 SPRITE lifeDisplay;
 SPRITE scoreNum;
@@ -351,6 +352,7 @@ void initGame() {
     vOff = 0;
     initPlayer();
     initEnemies();
+    initFood();
     score = 0;
     lives = 3;
     initScoreDisplay();
@@ -362,6 +364,7 @@ void initGame() {
 void updateGame() {
     updatePlayer();
     updateEnemies();
+    updateFood();
     updateScoreNum();
     updateLifeNum();
     checkPlayerEnemyCollision();
@@ -370,6 +373,7 @@ void updateGame() {
 void drawGame() {
     drawPlayer();
     drawEnemies();
+    drawFood();
     drawScore();
     drawLives();
     drawScoreNum();
@@ -418,6 +422,14 @@ void initEnemies() {
     enemy2.numFrames = 3;
 }
 
+void initFood() {
+    food.width = 8;
+    food.height = 8;
+    food.x = rand() % 220;
+    food.y = rand() % 140;
+    food.oamIndex = 3;
+}
+
 void initScoreDisplay() {
     scoreDisplay.width = 32;
     scoreDisplay.height = 8;
@@ -464,6 +476,12 @@ void drawEnemies() {
     shadowOAM[enemy2.oamIndex].attr0 = ((enemy2.y) & 0xFF) | (0<<14) | (0<<13) | (0<<8);
     shadowOAM[enemy2.oamIndex].attr1 = ((enemy2.x) & 0x1FF) | (1<<14);
     shadowOAM[enemy2.oamIndex].attr2 = ((((16 + enemy2.direction * 2) * (32) + (enemy2.currentFrame * 2))) & 0x3FF) | (((0) & 3) << 10);
+}
+
+void drawFood() {
+    shadowOAM[food.oamIndex].attr0 = ((food.y - vOff) & 0xFF) | (0<<14) | (0<<13) | (0<<8);
+    shadowOAM[food.oamIndex].attr1 = ((food.x - hOff) & 0x1FF) | (0<<14);
+    shadowOAM[food.oamIndex].attr2 = ((((0) * (32) + (8))) & 0x3FF) | (((0) & 3) << 10);
 }
 
 void drawScore() {
@@ -609,6 +627,16 @@ void updateEnemies() {
     } else {
         enemy1.currentFrame = 0;
         enemy1.timeUntilNextFrame = 10;
+    }
+}
+
+void updateFood() {
+    if (collision(player.x, player.y, player.width, player.height, food.x, food.y, food.width, food.height)) {
+        if (lives < 3) {
+            lives++;
+        }
+        food.x = 240;
+        food.y = 180;
     }
 }
 

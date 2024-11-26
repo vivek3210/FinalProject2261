@@ -468,27 +468,29 @@ goToWin:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 0, uses_anonymous_args = 0
 	mov	ip, #0
+	mov	r3, #256
+	mov	r2, #67108864
 	ldr	r0, .L60
 	push	{r4, lr}
 	ldr	lr, .L60+4
-	str	ip, [r0]
+	strh	r3, [r2]	@ movhi
 	ldr	r4, .L60+8
-	mov	r3, #2912
-	mov	r2, #100663296
+	str	ip, [r0]
+	mov	r2, #83886080
 	mov	r0, #3
 	ldr	r1, .L60+12
 	str	ip, [lr]
 	mov	lr, pc
 	bx	r4
-	mov	r3, #1024
+	mov	r3, #1456
+	mov	r2, #100663296
 	mov	r0, #3
-	ldr	r2, .L60+16
-	ldr	r1, .L60+20
+	ldr	r1, .L60+16
 	mov	lr, pc
 	bx	r4
 	mov	r0, #3
-	mov	r3, #256
-	mov	r2, #83886080
+	mov	r3, #1024
+	ldr	r2, .L60+20
 	ldr	r1, .L60+24
 	mov	lr, pc
 	bx	r4
@@ -515,10 +517,10 @@ goToWin:
 	.word	hOff
 	.word	vOff
 	.word	DMANow
-	.word	tilesetTiles
+	.word	wingoldenaxePal
+	.word	wingoldenaxeTiles
 	.word	100679680
-	.word	tilemapwinMap
-	.word	tilesetPal
+	.word	wingoldenaxeMap
 	.word	state
 	.word	hideSprites
 	.word	waitForVBlank
@@ -569,27 +571,29 @@ goToLose:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 0, uses_anonymous_args = 0
 	mov	ip, #0
+	mov	r3, #256
+	mov	r2, #67108864
 	ldr	r0, .L69
 	push	{r4, lr}
 	ldr	lr, .L69+4
-	str	ip, [r0]
+	strh	r3, [r2]	@ movhi
 	ldr	r4, .L69+8
-	mov	r3, #2912
-	mov	r2, #100663296
+	str	ip, [r0]
+	mov	r2, #83886080
 	mov	r0, #3
 	ldr	r1, .L69+12
 	str	ip, [lr]
 	mov	lr, pc
 	bx	r4
-	mov	r3, #1024
+	mov	r3, #1488
+	mov	r2, #100663296
 	mov	r0, #3
-	ldr	r2, .L69+16
-	ldr	r1, .L69+20
+	ldr	r1, .L69+16
 	mov	lr, pc
 	bx	r4
 	mov	r0, #3
-	mov	r3, #256
-	mov	r2, #83886080
+	mov	r3, #1024
+	ldr	r2, .L69+20
 	ldr	r1, .L69+24
 	mov	lr, pc
 	bx	r4
@@ -616,10 +620,10 @@ goToLose:
 	.word	hOff
 	.word	vOff
 	.word	DMANow
-	.word	tilesetTiles
+	.word	losegoldenaxePal
+	.word	losegoldenaxeTiles
 	.word	100679680
-	.word	tilemaploseMap
-	.word	tilesetPal
+	.word	losegoldenaxeMap
 	.word	state
 	.word	hideSprites
 	.word	waitForVBlank
