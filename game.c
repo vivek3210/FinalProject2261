@@ -234,6 +234,7 @@ void updatePlayer() {
 
         if (collision(player.x - attackRadius, player.y - attackRadius, player.width + 2 * attackRadius, player.height + 2 * attackRadius, enemy1.x >> 3, enemy1.y >> 3, enemy1.width, enemy1.height)) {
             score++;
+            SCREENBLOCK[8].tilemap[OFFSET(player.x, player.y, 8)] = TILEMAP_ENTRY_TILEID(4);
             enemy1.x = 0;
             enemy1.y = 0;
         }
@@ -276,6 +277,12 @@ void updatePlayer() {
     }
     if (vOff > (MAPHEIGHT - SCREENHEIGHT)) {
         vOff = (MAPHEIGHT - SCREENHEIGHT);
+    }
+
+    // cheat
+    if (BUTTON_PRESSED(BUTTON_LSHOULDER) && BUTTON_PRESSED(BUTTON_RSHOULDER)) {
+        player.x = princess.x;
+        player.y = princess.y;
     }
 }
 
@@ -383,6 +390,8 @@ void checkPlayerEnemyCollision() {
             player.x += 10;
             lives--;
         }
+        // Change player skin to red
+        SPRITE_PAL[10] = RGB(31, 0, 0);
     }
     // if (collision(player.x, player.y, player.width, player.height, enemy2.x, enemy2.y, enemy2.width, enemy2.height)) {
     //     lives--;

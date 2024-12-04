@@ -560,6 +560,7 @@ void updatePlayer() {
 
         if (collision(player.x - attackRadius, player.y - attackRadius, player.width + 2 * attackRadius, player.height + 2 * attackRadius, enemy1.x >> 3, enemy1.y >> 3, enemy1.width, enemy1.height)) {
             score++;
+            ((SB*) 0x6000000)[8].tilemap[((player.y) * (8) + (player.x))] = (4 & 1023);
             enemy1.x = 0;
             enemy1.y = 0;
         }
@@ -602,6 +603,12 @@ void updatePlayer() {
     }
     if (vOff > (256 - 160)) {
         vOff = (256 - 160);
+    }
+
+
+    if ((!(~(oldButtons) & ((1<<9))) && (~(buttons) & ((1<<9)))) && (!(~(oldButtons) & ((1<<8))) && (~(buttons) & ((1<<8))))) {
+        player.x = princess.x;
+        player.y = princess.y;
     }
 }
 
@@ -709,6 +716,8 @@ void checkPlayerEnemyCollision() {
             player.x += 10;
             lives--;
         }
+
+        ((u16 *)0x5000200)[10] = (((31) & 31) | ((0) & 31) << 5 | ((0) & 31) << 10);
     }
 
 

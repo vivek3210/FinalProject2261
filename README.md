@@ -7,10 +7,18 @@
 - From win/lose to start: press start
 
 ## What is done
-- Attack is done. Enemy chasing is (kinda) working. 
+- Art for states (all except main game) are done. I haven't gotten to that because I was troubleshooting the parallax background for 8+ hours.
+- Objective for game
+- Enemy chasing
+- Food
+- Sprite Pal Modification
+- Audio
 
 ## What needs to be added
-- Food
+- new tileset + map
 
 ## Bugs
-- I need to figure out what is wrong with the enemy chasing and floating point. Can't for the life of me get that to work. Will contact TA for that.
+- tilemap pal modification is a bit wonky, doesnt show up where i need it to.
+
+## How to Play
+- smack the enemy and break the princesses cage (A button) to save her.

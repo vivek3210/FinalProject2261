@@ -559,9 +559,10 @@ int main() {
 
 void initialize() {
     mgba_open();
-    (*(volatile unsigned short *)0x4000000) = ((0) & 7) | (1 << (8 + (0 % 4))) | (1 << 12);
+    (*(volatile unsigned short *)0x4000000) = ((0) & 7) | (1 << 12);
     (*(volatile unsigned short*) 0x4000008) = ((0) << 2) | ((8) << 8) | (1 << 14) | (0 << 7);
-
+    (*(volatile unsigned short*) 0x400000A) = ((2) << 2) | ((16) << 8) | (0 << 14) | (0 << 7);
+    (*(volatile unsigned short*) 0x400000C) = ((1) << 2) | ((28) << 8) | (0 << 14) | (0 << 7);
 
     setupSounds();
     setupSoundInterrupts();
@@ -571,15 +572,16 @@ void initialize() {
 }
 
 void goToStart() {
+    (*(volatile unsigned short *)0x4000000) = (1 << (8 + (2 % 4)));
     hOff = 0;
     vOff = 0;
 
 
 
 
-    DMANow(3, goldenaxestartPal, ((unsigned short *)0x5000000), 512 / 2);
-    DMANow(3, goldenaxestartTiles, &((CB*) 0x6000000)[0], 13152 / 2);
-    DMANow(3, goldenaxestartMap, &((SB*) 0x6000000)[8], 2048 / 2);
+    DMANow(3, &goldenaxestartPal, ((unsigned short *)0x5000000), 512 / 2);
+    DMANow(3, &goldenaxestartTiles, &((CB*) 0x6000000)[1], 13152 / 2);
+    DMANow(3, &goldenaxestartMap, &((SB*) 0x6000000)[28], 2048 / 2);
     state = START;
 }
 void start() {
@@ -592,16 +594,16 @@ void start() {
     }
 }
 void goToInstructions() {
-    (*(volatile unsigned short *)0x4000000) = (1 << (8 + (0 % 4)));
+    (*(volatile unsigned short *)0x4000000) = (1 << (8 + (2 % 4)));
     hOff = 0;
     vOff = 0;
 
 
 
 
-    DMANow(3, instructionsgoldenaxePal, ((unsigned short *)0x5000000), 512 / 2);
-    DMANow(3, instructionsgoldenaxeTiles, &((CB*) 0x6000000)[0], 2656 / 2);
-    DMANow(3, instructionsgoldenaxeMap, &((SB*) 0x6000000)[8], 2048 / 2);
+    DMANow(3, &instructionsgoldenaxePal, ((unsigned short *)0x5000000), 512 / 2);
+    DMANow(3, &instructionsgoldenaxeTiles, &((CB*) 0x6000000)[1], 2656 / 2);
+    DMANow(3, &instructionsgoldenaxeMap, &((SB*) 0x6000000)[28], 2048 / 2);
     state = INSTRUCTIONS;
 }
 void instructions() {
@@ -610,11 +612,12 @@ void instructions() {
     }
 }
 void goToPause() {
+    (*(volatile unsigned short *)0x4000000) = (1 << (8 + (2 % 4)));
     hOff = 0;
     vOff = 0;
-    DMANow(3, tilesetTiles, &((CB*) 0x6000000)[0], 5824 / 2);
-    DMANow(3, tilemappausedMap, &((SB*) 0x6000000)[8], (2048) / 2);
-    DMANow(3, tilesetPal, ((unsigned short *)0x5000000), 512 / 2);
+    DMANow(3, &tilesetTiles, &((CB*) 0x6000000)[1], 5824 / 2);
+    DMANow(3, &tilemappausedMap, &((SB*) 0x6000000)[28], (2048) / 2);
+    DMANow(3, &tilesetPal, ((unsigned short *)0x5000000), 512 / 2);
     state = PAUSE;
     hideSprites();
     waitForVBlank();
@@ -629,8 +632,9 @@ void pause() {
     }
 }
 void goToGameOne() {
-    (*(volatile unsigned short *)0x4000000) = ((0) & 7) | (1 << (8 + (0 % 4))) | (1 << (8 + (1 % 4))) | (1 << 12);
+    (*(volatile unsigned short *)0x4000000) = (1 << (8 + (0 % 4))) | (1 << (8 + (1 % 4))) | (1 << 12);
     playSoundA(goldenaxestartmusic_data, goldenaxestartmusic_length, 1);
+
 
     (*(volatile unsigned short*) 0x4000008) = ((0) << 2) | ((8) << 8) | (1 << 14) | (0 << 7) | 1;
     DMANow(3, &tilesetPal, ((unsigned short *)0x5000000), 512 / 2);
@@ -639,9 +643,9 @@ void goToGameOne() {
 
 
 
-    (*(volatile unsigned short*) 0x400000A) = ((0) << 2) | ((10) << 8) | (0 << 7) | 0;
-
-    DMANow(3, tilemapparallaxbackgroundMap, &((SB*) 0x6000000)[10], (2048) / 2);
+    (*(volatile unsigned short*) 0x400000A) = ((2) << 2) | ((16) << 8) | (0 << 14) | (0 << 7) | 0;
+    DMANow(3, &tilesetTiles, &((CB*) 0x6000000)[2], 5824 / 2);
+    DMANow(3, &tilemapparallaxbackgroundMap, &((SB*) 0x6000000)[16], (2048) / 2);
 
 
 
@@ -681,6 +685,7 @@ void gameTwo() {
 
 }
 void goToWin() {
+    stopSounds();
     (*(volatile unsigned short *)0x4000000) = (1 << (8 + (0 % 4)));
     hOff = 0;
     vOff = 0;
@@ -688,9 +693,9 @@ void goToWin() {
 
 
 
-    DMANow(3, wingoldenaxePal, ((unsigned short *)0x5000000), 512 / 2);
-    DMANow(3, wingoldenaxeTiles, &((CB*) 0x6000000)[0], 2912 / 2);
-    DMANow(3, wingoldenaxeMap, &((SB*) 0x6000000)[8], 2048 / 2);
+    DMANow(3, &wingoldenaxePal, ((unsigned short *)0x5000000), 512 / 2);
+    DMANow(3, &wingoldenaxeTiles, &((CB*) 0x6000000)[0], 2912 / 2);
+    DMANow(3, &wingoldenaxeMap, &((SB*) 0x6000000)[8], 2048 / 2);
     state = WIN;
     hideSprites();
     waitForVBlank();
